@@ -12,7 +12,7 @@ const pool = new Pool({
 
 pool.connect((err) => {
   if (err) {
-    console.error('Error connecting to PostgreSQL database:', err.message);
+    console.error('Error connecting to PostgreSQL database:', err);
   } else {
     console.log('Connected to PostgreSQL database.');
     // Create votes table if it doesn't exist
