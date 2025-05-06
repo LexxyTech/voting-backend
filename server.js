@@ -45,11 +45,16 @@ app.post('/submit-vote', async (req, res) => {
   const { staffId } = voterDetails;
   const voterDetailsString = JSON.stringify(voterDetails);
   const votesString = JSON.stringify(votes);
+  console.log('Received request body:', req.body);
+  console.log('Extracted staffId:', staffId);
 
   try {
     const check = await pool.query('SELECT 1 FROM votes WHERE voter_details->>\'staffId\' = $1', [staffId]);
+    console.log('Duplicate check query:', 'SELECT 1 FROM votes WHERE voter_details->>\'staffId\' = $1', [staffId]);
+    console.log('Duplicate check result:', check.rows);
     if (check.rows.length > 0) {
-      return res.status(400).json({ success: false, message: 'Duplicate vote detected: Staff ID already voted' });
+   console.log('Duplicate detected, sending 400 response');   
+return res.status(400).json({ success: false, message: 'Duplicate vote detected: Staff ID already voted' });
     }
 
     const result = await pool.query(
@@ -69,7 +74,7 @@ app.get('/results', async (req, res) => {
     const result = await pool.query('SELECT * FROM votes');
     res.json(result.rows);
   } catch (error) {
-    console.error('Error retrieving votes:', error.message);
+    console.error('Error inserting vote:', error.stack);
     res.status(500).json({ error: 'Failed to retrieve votes' });
   }
 });
